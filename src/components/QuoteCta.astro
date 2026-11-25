@@ -1,0 +1,27 @@
+---
+import { quote } from '../data/paths.js';
+/* Call to action that carries the number plate over to the quote page.
+   A plain GET form, so it works without JavaScript. */
+---
+<section class="block block-dark" id="quote">
+  <h2>Get your free quote</h2>
+  <p class="cta-lead">Start with your number plate. The next page takes a few details.</p>
+  <form class="cta" action={quote} method="get">
+    <label for="cta-plate">Number plate</label>
+    <div class="cta-row">
+      <input id="cta-plate" name="plate" placeholder="e.g. ABC1234" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button class="btn" type="submit">Get a quote</button>
+    </div>
+  </form>
+</section>
+
+<style>
+  .cta-lead { margin-top: 12px; color: #e0f2fe; }
+  .cta { max-width: 560px; margin: 28px auto 0; text-align: left; }
+  .cta label { margin: 0; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .cta-row input { flex: 1 1 220px; min-width: 0; text-transform: uppercase; }
+  .cta-row input::placeholder { text-transform: none; }
+  .cta .cta-row .btn { flex: 1 0 auto; margin: 0; }
+  @media (min-width: 560px) { .cta .cta-row .btn { flex-grow: 0; } }
+</style>

@@ -1,0 +1,42 @@
+---
+import { quote } from '../data/paths.js';
+---
+<header class="nav">
+<a class="logo" href="#home">
+  <svg viewBox="-50 -55 100 112" aria-hidden="true"><path class="logo-shield" d="M0-50 42-34V4C42 30 22 46 0 54-22 46-42 30-42 4V-34Z"/><path class="logo-tick" d="M-19 2-5 16 21-12"/></svg>
+  CarInsure
+</a>
+<nav aria-label="Main">
+  <a href="#glass">Coverage</a>
+  <a href="#plans">Plans</a>
+  <a href="#claims">Claims</a>
+  <a class="btn btn-small" href={quote}>Get a quote</a>
+  <details class="menu" id="menu">
+    <summary aria-label="Menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+    </summary>
+    <div class="menu-panel">
+      <a href="#glass">Coverage</a>
+      <a href="#plans">Plans</a>
+      <a href="#claims">Claims</a>
+      <a href="#faq">Questions</a>
+    </div>
+  </details>
+</nav>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+  </header>
+
+<script>
+  const menu = document.getElementById('menu') as HTMLDetailsElement;
+  // Close after choosing a link, tapping elsewhere, or pressing Escape
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element;
+    if (!menu.contains(target) || target.closest('a')) menu.open = false;
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.open) {
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    }
+  });
+</script>

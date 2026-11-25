@@ -1,0 +1,60 @@
+---
+import { quote } from '../data/paths.js';
+import { chapters } from '../data/chapters.js';
+import Arrow from './Arrow.astro';
+
+// Section order, so each card knows its neighbours
+const order = ['home', ...chapters.map((c) => c.id), 'arrive'];
+---
+<div class="story" id="story">
+  <div class="stage" aria-hidden="true">
+    <svg id="scene" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
+  <div class="chapters">
+    <section class="chapter chapter-hero" id="home" data-scene="hero">
+      <div class="card">
+        <h1>Drive on.<br>We've got the rest.</h1>
+        <p>Scroll to take the car for a drive and see what each cover does when the road surprises you.</p>
+        <div class="actions">
+          <a class="btn" href={quote}>Get a quote</a>
+          <a class="btn btn-ghost" href="#glass" data-scroll>Start the drive</a>
+        </div>
+      </div>
+    </section>
+
+    {chapters.map((c, i) => (
+      <section class="chapter" id={c.id}>
+        <div class="card">
+          <p class="eyebrow">{c.eyebrow}</p>
+          <h2>{c.title}</h2>
+          <p>{c.text}</p>
+          <div class="card-foot">
+            <p class="status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7" /></svg> {c.status}</p>
+            <div class="pager">
+              <Arrow direction="prev" to={order[i]} />
+              <Arrow direction="next" to={order[i + 2]} />
+            </div>
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <section class="chapter" id="arrive" data-scene="arrive">
+      <div class="card">
+        <p class="eyebrow">Total protection</p>
+        <h2>Five surprises. Zero drama.</h2>
+        <p>Pick the plan that matches how you drive.</p>
+        <div class="actions">
+          <a class="btn" href="#plans" data-scroll>Compare plans</a>
+          <div class="pager"><Arrow direction="prev" to={order.at(-2)} /></div>
+        </div>
+        <p class="fine">Illustration only. Insurance pays for covered loss; it does not stop it happening.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  import '../scripts/story.js';
+</script>

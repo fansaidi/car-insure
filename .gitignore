@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+# original artwork downloads: licence does not allow sharing the source files
+vecteezy*
+# artwork kept locally but not used by the site
+_unused/

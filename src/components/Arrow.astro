@@ -1,0 +1,14 @@
+---
+/* Round button that scrolls the story to the previous or next section. */
+interface Props {
+  to: string;
+  direction: 'prev' | 'next';
+}
+const { to, direction } = Astro.props;
+const label = direction === 'prev' ? 'Previous section' : 'Next section';
+---
+<a class="arrow" class:list={[`arrow-${direction}`]} href={`#${to}`} data-scroll aria-label={label} title={label}>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d={direction === 'prev' ? 'M6 15 12 9 18 15' : 'M6 9 12 15 18 9'} />
+  </svg>
+</a>
