@@ -103,7 +103,7 @@ input[aria-invalid="true"] { border-color: #f87171; }
 .error { color: #fecaca; font-size: .875rem; }
 form .btn { margin-top: 20px; background: #fff; border-color: #fff; color: #0c4a6e; }
 form .btn:hover { background: var(--border); border-color: var(--border); color: #0c4a6e; }
-footer { padding: 24px 16px; text-align: center; font-size: .875rem; color: var(--muted); }
+footer { padding: 24px 16px 96px; text-align: center; font-size: .875rem; color: var(--muted); }
 
 /* Narrow screens: links move into the menu */
 @media (max-width: 760px) {

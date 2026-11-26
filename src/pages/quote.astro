@@ -86,7 +86,10 @@ import Layout from '../layouts/Layout.astro';
     <section class="done" id="done" hidden tabindex="-1" aria-labelledby="done-title">
       <h2 id="done-title">Details look complete</h2>
       <p id="done-text"></p>
-      <a class="btn" href={home}>Back to home</a>
+      <div class="done-actions">
+        <a class="btn whatsapp" id="whatsapp" target="_blank" rel="noopener noreferrer" hidden>Get my quote on WhatsApp</a>
+        <a class="btn btn-ghost" href={home}>Back to home</a>
+      </div>
     </section>
   </main>
 </Layout>
@@ -96,7 +99,7 @@ import Layout from '../layouts/Layout.astro';
 </script>
 
 <style>
-  .quote { max-width: 560px; margin: 0 auto; padding: calc(var(--nav-h) + 20px) 16px 64px; }
+  .quote { max-width: 560px; margin: 0 auto; padding: calc(var(--nav-h) + 20px) 16px 96px; }
   .back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--primary); font-weight: 500; text-decoration: none; }
   .back svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   h1 { margin-top: 8px; font-size: clamp(1.8rem, 6vw, 2.4rem); }
@@ -124,4 +127,8 @@ import Layout from '../layouts/Layout.astro';
   .demo { margin-top: 12px; text-align: center; }
   .done { margin-top: 24px; padding: 24px; background: var(--card); border: 2px solid var(--accent); border-radius: 16px; }
   .done p { margin: 12px 0 20px; }
+  .done-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  /* dark enough for white text */
+  .whatsapp, .whatsapp:hover { background: #15803d; border-color: #15803d; color: #fff; }
+  .whatsapp:hover { background: #166534; border-color: #166534; }
 </style>

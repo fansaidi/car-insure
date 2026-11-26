@@ -1,4 +1,6 @@
-/* Quote page (prototype: validates only, nothing is sent or stored). */
+/* Quote page (prototype: validates only, this site sends and stores nothing). */
+import { whatsappLink } from '../data/contact.js';
+
 const byId = (id) => document.getElementById(id);
 const form = byId('quote-form');
 const plateInput = byId('plate');
@@ -104,7 +106,21 @@ form.addEventListener('submit', (e) => {
   const invalid = fields().filter((input) => !check(input));
   if (invalid.length) { invalid[0].focus(); return; }
   const done = byId('done');
-  byId('done-text').textContent = `This is a design prototype, so nothing was sent or saved. On a live site, the quote would go to ${byId('email').value.trim()}.`;
+  const email = byId('email').value.trim();
+  const wantsWhatsApp = byId('by-whatsapp').checked;
+  const whatsapp = byId('whatsapp');
+  whatsapp.hidden = !wantsWhatsApp;
+  if (wantsWhatsApp) {
+    // only the plate and plan go into the message: never the ID number or other personal details
+    whatsapp.href = whatsappLink([
+      "Hi CarInsure, I'd like my car insurance quote.",
+      noPlate.checked ? 'New car, no number plate yet.' : `Number plate: ${plateInput.value.trim().toUpperCase()}`,
+      ...(byId('chosen').hidden ? [] : [byId('chosen').textContent]),
+    ].join('\n'));
+  }
+  byId('done-text').textContent = wantsWhatsApp
+    ? 'Tap the button to open WhatsApp with a ready-written message, then press send. This design prototype has not sent or saved anything itself.'
+    : `This is a design prototype, so nothing was sent or saved. On a live site, the quote would go to ${email}.`;
   form.hidden = true;
   done.hidden = false;
   done.focus();
