@@ -1,7 +1,11 @@
 /* Quote page (prototype: validates only, this site sends and stores nothing). */
 import { whatsappLink } from '../data/contact.js';
+import { fill } from '../i18n/index.js';
 
 const byId = (id) => document.getElementById(id);
+// the page's language, written into the HTML
+const copy = JSON.parse(byId('i18n').textContent);
+const { errors } = copy;
 const form = byId('quote-form');
 const plateInput = byId('plate');
 const idNumber = byId('id-number');
@@ -11,18 +15,20 @@ const idKind = () => idType.value;
 
 /* Returns the message to show, or '' when the value is fine. */
 const rules = {
-  plate: (v) => (/^[A-Z]{1,4}\s?\d{1,4}\s?[A-Z]{0,2}$/i.test(v) ? '' : 'Enter a number plate, for example ABC1234.'),
+  plate: (v) => (/^[A-Z]{1,4}\s?\d{1,4}\s?[A-Z]{0,2}$/i.test(v) ? '' : errors.plate),
   idNumber: (v) => {
     const kind = idKind();
-    if (kind === 'nric') return /^\d{6}-\d{2}-\d{4}$/.test(v) ? '' : 'Enter all 12 digits of the NRIC.';
-    if (kind === 'passport') return /^[A-Z0-9]{6,12}$/i.test(v) ? '' : 'Enter the passport number.';
-    if (kind === 'company') return v.length >= 6 ? '' : 'Enter the business registration number.';
-    return v.length >= 5 ? '' : `Enter the ${kind === 'police' ? 'police' : 'military'} IC number.`;
+    const valid = {
+      nric: /^\d{6}-\d{2}-\d{4}$/.test(v),
+      passport: /^[A-Z0-9]{6,12}$/i.test(v),
+      company: v.length >= 6,
+    }[kind] ?? v.length >= 5;
+    return valid ? '' : errors[kind];
   },
-  name: (v) => (v.length >= 2 ? '' : idKind() === 'company' ? 'Enter the company name.' : "Enter the owner's name."),
-  email: (v, input) => (v && input.validity.valid ? '' : 'Enter an email like name@example.com.'),
-  phone: (v) => (/^1\d{8,9}$/.test(v.replace(/[\s-]/g, '')) ? '' : 'Enter a mobile number like 12 345 6789.'),
-  postcode: (v) => (/^\d{5}$/.test(v) ? '' : 'Enter a 5-digit postcode.'),
+  name: (v) => (v.length >= 2 ? '' : errors[idKind() === 'company' ? 'companyName' : 'ownerName']),
+  email: (v, input) => (v && input.validity.valid ? '' : errors.email),
+  phone: (v) => (/^1\d{8,9}$/.test(v.replace(/[\s-]/g, '')) ? '' : errors.phone),
+  postcode: (v) => (/^\d{5}$/.test(v) ? '' : errors.postcode),
 };
 
 const ruleFor = (input) => rules[input.name];
@@ -55,13 +61,6 @@ form.addEventListener('input', (e) => {
   if (input.getAttribute('aria-invalid') === 'true') check(input);
 });
 
-const ID_FIELDS = {
-  nric: ["Vehicle owner's NRIC number", 'XXXXXX-XX-XXXX'],
-  police: ['Police IC number', ''],
-  army: ['Military IC number', ''],
-  passport: ["Vehicle owner's passport number", ''],
-  company: ['Business registration number', ''],
-};
 let shownKind = 'nric';
 
 const update = () => {
@@ -69,18 +68,17 @@ const update = () => {
   const isCompany = kind === 'company';
 
   plateInput.disabled = noPlate.checked;
-  plateInput.placeholder = noPlate.checked ? 'No plate yet' : 'e.g. ABC1234';
+  plateInput.placeholder = noPlate.checked ? copy.plateNone : copy.plateExample;
   if (noPlate.checked) clear(plateInput);
 
-  byId('name-label').textContent = isCompany ? 'Company name' : "Owner's name";
-  byId('name').placeholder = isCompany ? 'Registered company name' : 'As on your ID';
+  byId('name-label').textContent = isCompany ? copy.companyName : copy.ownerName;
+  byId('name').placeholder = isCompany ? copy.companyExample : copy.ownerExample;
   byId('name').autocomplete = isCompany ? 'organization' : 'name';
 
-  const [label, placeholder] = ID_FIELDS[kind];
-  byId('id-label').textContent = label;
+  byId('id-label').textContent = copy.idLabels[kind];
   // the NCD note applies to people, not company registrations
   byId('id-help').hidden = isCompany;
-  idNumber.placeholder = placeholder;
+  idNumber.placeholder = kind === 'nric' ? 'XXXXXX-XX-XXXX' : '';
   idNumber.inputMode = kind === 'nric' ? 'numeric' : 'text';
   // a different kind of ID starts empty
   if (kind !== shownKind) { idNumber.value = ''; clear(idNumber); shownKind = kind; }
@@ -97,7 +95,7 @@ const plate = (params.get('plate') || '').trim().toUpperCase().slice(0, 12);
 if (plate) plateInput.value = plate;
 const plan = params.get('plan');
 if (['Basic', 'Plus', 'Max'].includes(plan)) {
-  byId('chosen').textContent = `Selected plan: ${plan}`;
+  byId('chosen').textContent = fill(copy.chosen, { plan });
   byId('chosen').hidden = false;
 }
 
@@ -113,14 +111,12 @@ form.addEventListener('submit', (e) => {
   if (wantsWhatsApp) {
     // only the plate and plan go into the message: never the ID number or other personal details
     whatsapp.href = whatsappLink([
-      "Hi CarInsure, I'd like my car insurance quote.",
-      noPlate.checked ? 'New car, no number plate yet.' : `Number plate: ${plateInput.value.trim().toUpperCase()}`,
+      copy.message.hello,
+      noPlate.checked ? copy.message.newCar : fill(copy.message.plate, { plate: plateInput.value.trim().toUpperCase() }),
       ...(byId('chosen').hidden ? [] : [byId('chosen').textContent]),
     ].join('\n'));
   }
-  byId('done-text').textContent = wantsWhatsApp
-    ? 'Tap the button to open WhatsApp with a ready-written message, then press send. This design prototype has not sent or saved anything itself.'
-    : `This is a design prototype, so nothing was sent or saved. On a live site, the quote would go to ${email}.`;
+  byId('done-text').textContent = wantsWhatsApp ? copy.doneWhatsApp : fill(copy.doneEmail, { email });
   form.hidden = true;
   done.hidden = false;
   done.focus();

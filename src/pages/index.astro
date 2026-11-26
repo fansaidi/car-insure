@@ -1,21 +1,4 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Nav from '../components/Nav.astro';
-import Story from '../components/Story.astro';
-import Plans from '../components/Plans.astro';
-import Claims from '../components/Claims.astro';
-import Faq from '../components/Faq.astro';
-import QuoteCta from '../components/QuoteCta.astro';
+import HomePage from '../views/HomePage.astro';
 ---
-<Layout>
-  <a class="skip" href="#plans">Skip the story, see plans</a>
-  <Nav />
-  <main>
-    <Story />
-    <Plans />
-    <Claims />
-    <Faq />
-    <QuoteCta />
-  </main>
-  <footer>CarInsure is a placeholder brand. Design prototype. Car, character and scenery artwork: <a href="https://www.vecteezy.com/" style="color: inherit">Vecteezy.com</a></footer>
-</Layout>
+<HomePage lang="en" />

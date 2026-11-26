@@ -1,0 +1,28 @@
+---
+/* Language toggle: one button naming the other language (BM on English pages,
+   EN on Malay pages). It opens the same page in that language. */
+import { LANGUAGES, useTranslations } from '../i18n/index.js';
+import { paths } from '../data/paths.js';
+
+interface Props {
+  lang: string;
+  page: 'home' | 'quote';
+}
+const { lang, page } = Astro.props;
+const t = useTranslations(lang);
+const other = LANGUAGES.find((l) => l.code !== lang)!;
+const hint = `${t.language.switchTo} ${other.name}`;
+---
+<div class="lang">
+  <a href={paths(other.code)[page]} hreflang={other.code} aria-label={`${other.short}: ${hint}`} title={hint}>{other.short}</a>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('.lang a').forEach((link) => {
+    // stay in the same place: carry the plate/plan query and section over
+    link.addEventListener('click', () => {
+      link.search = location.search;
+      link.hash = location.hash;
+    });
+  });
+</script>

@@ -1,16 +1,19 @@
 ---
-import { quote } from '../data/paths.js';
+import { useTranslations } from '../i18n/index.js';
+import { paths } from '../data/paths.js';
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 /* Call to action that carries the number plate over to the quote page.
    A plain GET form, so it works without JavaScript. */
 ---
 <section class="block block-dark" id="quote">
-  <h2>Get your free quote</h2>
-  <p class="cta-lead">Start with your number plate. The next page takes a few details.</p>
-  <form class="cta" action={quote} method="get">
-    <label for="cta-plate">Number plate</label>
+  <h2>{t.cta.title}</h2>
+  <p class="cta-lead">{t.cta.lead}</p>
+  <form class="cta" action={paths(lang).quote} method="get">
+    <label for="cta-plate">{t.cta.plate}</label>
     <div class="cta-row">
-      <input id="cta-plate" name="plate" placeholder="e.g. ABC1234" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false">
-      <button class="btn" type="submit">Get a quote</button>
+      <input id="cta-plate" name="plate" placeholder={t.cta.example} maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button class="btn" type="submit">{t.cta.button}</button>
     </div>
   </form>
 </section>

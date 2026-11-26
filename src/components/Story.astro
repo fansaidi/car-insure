@@ -1,10 +1,12 @@
 ---
-import { quote } from '../data/paths.js';
-import { chapters } from '../data/chapters.js';
+import { useTranslations } from '../i18n/index.js';
+import { paths } from '../data/paths.js';
 import Arrow from './Arrow.astro';
 
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 // Section order, so each card knows its neighbours
-const order = ['home', ...chapters.map((c) => c.id), 'arrive'];
+const order = ['home', ...t.chapters.map((c) => c.id), 'arrive'];
 ---
 <div class="story" id="story">
   <div class="stage" aria-hidden="true">
@@ -14,16 +16,16 @@ const order = ['home', ...chapters.map((c) => c.id), 'arrive'];
   <div class="chapters">
     <section class="chapter chapter-hero" id="home" data-scene="hero">
       <div class="card">
-        <h1>Drive on.<br>We've got the rest.</h1>
-        <p>Scroll to take the car for a drive and see what each cover does when the road surprises you.</p>
+        <h1>{t.hero.title[0]}<br />{t.hero.title[1]}</h1>
+        <p>{t.hero.text}</p>
         <div class="actions">
-          <a class="btn" href={quote}>Get a quote</a>
-          <a class="btn btn-ghost" href="#glass" data-scroll>Start the drive</a>
+          <a class="btn" href={paths(lang).quote}>{t.hero.quote}</a>
+          <a class="btn btn-ghost" href="#glass" data-scroll>{t.hero.start}</a>
         </div>
       </div>
     </section>
 
-    {chapters.map((c, i) => (
+    {t.chapters.map((c, i) => (
       <section class="chapter" id={c.id}>
         <div class="card">
           <p class="eyebrow">{c.eyebrow}</p>
@@ -32,8 +34,8 @@ const order = ['home', ...chapters.map((c) => c.id), 'arrive'];
           <div class="card-foot">
             <p class="status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7" /></svg> {c.status}</p>
             <div class="pager">
-              <Arrow direction="prev" to={order[i]} />
-              <Arrow direction="next" to={order[i + 2]} />
+              <Arrow direction="prev" label={t.arrows.prev} to={order[i]} />
+              <Arrow direction="next" label={t.arrows.next} to={order[i + 2]} />
             </div>
           </div>
         </div>
@@ -42,14 +44,14 @@ const order = ['home', ...chapters.map((c) => c.id), 'arrive'];
 
     <section class="chapter" id="arrive" data-scene="arrive">
       <div class="card">
-        <p class="eyebrow">Total protection</p>
-        <h2>Five surprises. Zero drama.</h2>
-        <p>Pick the plan that matches how you drive.</p>
+        <p class="eyebrow">{t.arrive.eyebrow}</p>
+        <h2>{t.arrive.title}</h2>
+        <p>{t.arrive.text}</p>
         <div class="actions">
-          <a class="btn" href="#plans" data-scroll>Compare plans</a>
-          <div class="pager"><Arrow direction="prev" to={order.at(-2)} /></div>
+          <a class="btn" href="#plans" data-scroll>{t.arrive.compare}</a>
+          <div class="pager"><Arrow direction="prev" label={t.arrows.prev} to={order.at(-2)} /></div>
         </div>
-        <p class="fine">Illustration only. Insurance pays for covered loss; it does not stop it happening.</p>
+        <p class="fine">{t.arrive.fine}</p>
       </div>
     </section>
   </div>

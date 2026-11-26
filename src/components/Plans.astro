@@ -1,28 +1,23 @@
 ---
-import { quote } from '../data/paths.js';
+import { useTranslations } from '../i18n/index.js';
+import { paths } from '../data/paths.js';
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const plans = [['Basic', '$19'], ['Plus', '$34'], ['Max', '$49']];
 ---
 <section class="block" id="plans">
-  <h2>Pick your cover</h2>
-  <p class="lead">Sample prices for design purposes.</p>
+  <h2>{t.plans.title}</h2>
+  <p class="lead">{t.plans.lead}</p>
   <div class="grid">
-    <article class="plan">
-      <h3>Basic</h3>
-      <p class="price">$19<span>/month</span></p>
-      <ul><li>Third-party liability</li><li>Theft</li></ul>
-      <a class="btn btn-ghost" href={`${quote}?plan=Basic`}>Choose Basic</a>
-    </article>
-    <article class="plan plan-best">
-      <p class="badge">Most complete value</p>
-      <h3>Plus</h3>
-      <p class="price">$34<span>/month</span></p>
-      <ul><li>Everything in Basic</li><li>Collision</li><li>Mirror &amp; glass</li><li>Flood &amp; storm</li></ul>
-      <a class="btn" href={`${quote}?plan=Plus`}>Choose Plus</a>
-    </article>
-    <article class="plan">
-      <h3>Max</h3>
-      <p class="price">$49<span>/month</span></p>
-      <ul><li>Everything in Plus</li><li>24/7 roadside help</li><li>Courtesy car</li></ul>
-      <a class="btn btn-ghost" href={`${quote}?plan=Max`}>Choose Max</a>
-    </article>
+    {plans.map(([name, price]) => (
+      <article class:list={['plan', { 'plan-best': name === 'Plus' }]}>
+        {name === 'Plus' && <p class="badge">{t.plans.best}</p>}
+        <h3>{name}</h3>
+        <p class="price">{price}<span>{t.plans.perMonth}</span></p>
+        <ul>{t.plans.items[name].map((item) => <li>{item}</li>)}</ul>
+        <a class:list={['btn', { 'btn-ghost': name !== 'Plus' }]} href={`${paths(lang).quote}?plan=${name}`}>{t.plans.choose} {name}</a>
+      </article>
+    ))}
   </div>
 </section>

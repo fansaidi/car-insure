@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Story from '../components/Story.astro';
+import Plans from '../components/Plans.astro';
+import Claims from '../components/Claims.astro';
+import Faq from '../components/Faq.astro';
+import QuoteCta from '../components/QuoteCta.astro';
+import { useTranslations } from '../i18n/index.js';
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+<Layout lang={lang} page="home" title={t.meta.title} description={t.meta.description}>
+  <a class="skip" href="#plans">{t.skip}</a>
+  <Nav lang={lang} />
+  <main>
+    <Story lang={lang} />
+    <Plans lang={lang} />
+    <Claims lang={lang} />
+    <Faq lang={lang} />
+    <QuoteCta lang={lang} />
+  </main>
+  <footer>{t.footer} <a href="https://www.vecteezy.com/" style="color: inherit">Vecteezy.com</a></footer>
+</Layout>

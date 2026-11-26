@@ -1,28 +1,33 @@
 ---
 import '../styles/global.css';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { LANGUAGES } from '../i18n/index.js';
+import { paths } from '../data/paths.js';
 interface Props {
-  title?: string;
-  description?: string;
+  lang: string;
+  page: 'home' | 'quote';
+  title: string;
+  description: string;
 }
-const {
-  title = "CarInsure — Drive on, we've got you",
-  description = 'Car insurance for glass, collision, flood, theft and roadside help.',
-} = Astro.props;
+const { lang, page, title, description } = Astro.props;
+// search engines expect full addresses; the deploy workflow provides the site's origin
+const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
 ---
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
   <meta name="description" content={description}>
+  {LANGUAGES.map((l) => <link rel="alternate" hreflang={l.code} href={absolute(paths(l.code)[page])} />)}
+  <link rel="alternate" hreflang="x-default" href={absolute(paths('en')[page])}>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Rubik:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <slot />
-  <WhatsAppButton />
+  <WhatsAppButton lang={lang} />
 </body>
 </html>
